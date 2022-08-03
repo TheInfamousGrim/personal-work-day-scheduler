@@ -11,7 +11,7 @@ const currentDayJS = dayjs().format('dddd, MMMM, DD, YYYY');
 // Update the currentDayText with the currentDayJS
 currentDayText.text(currentDayJS);
 
-/* -------------------- update styling of event text ares ------------------- */
+/* -------------------- update styling of event text areas ------------------ */
 function eventColorize() {
     // getting the currentHour
     const currentHour = parseInt(dayjs().format('HH'));
@@ -20,6 +20,7 @@ function eventColorize() {
         // get the current the selected data-hour attribute
         const dataHour = parseInt(txtArea.getAttribute('data-hour'));
 
+        // style depending on dataHour relative to currentHour
         if (currentHour > dataHour) {
             txtArea.classList.remove('present');
             txtArea.classList.add('past');
@@ -34,6 +35,34 @@ function eventColorize() {
 }
 
 eventColorize();
+
+/* -------------- update the event text with local storage text ------------- */
+
+function updateEventText() {
+    let currentDayEvents = [];
+    // Get events from local storage
+    const allEvents = JSON.parse(localStorage.getItem('scheduledEvents')) || [];
+    // Filter for current day
+    if (allEvents.length !== 0) {
+        currentDayEvents = allEvents.filter((el) => el.event_date === currentDayText.text());
+    } else return;
+
+    if (currentDayEvents.length === 0) {
+        textAreas.forEach((txtArea) => {
+            txtArea.text('');
+        });
+    } else {
+        currentDayEvents.forEach((eventObj) => {
+            // Select text area that matches saved event hour with the correct time block
+            const textAreaToBeAdded = $(`[data-hour="${eventObj.event_hour}"]`);
+            // Add the saved event description to the correct text area
+            textAreaToBeAdded.text(eventObj.event_description);
+        });
+    }
+}
+
+updateEventText();
+
 /* ---------------------- add scheduled event function ---------------------- */
 
 function addScheduledEvent(array, eventDescription, eventHour, eventDate) {
@@ -59,11 +88,11 @@ saveBtns.forEach((btn) => {
         const currentEventHour = e.currentTarget.previousElementSibling.getAttribute('data-hour');
 
         // get a reference to the events in the local storage
-        const eventsForCurrentDay = JSON.parse(localStorage.getItem('scheduledEvents')) || [];
+        const allSavedEvents = JSON.parse(localStorage.getItem('scheduledEvents')) || [];
 
         // if the event text is not empty add the scheduled event
         if (currentEventText !== '') {
-            addScheduledEvent(eventsForCurrentDay, currentEventText, currentEventHour, currentDayText.text());
+            addScheduledEvent(allSavedEvents, currentEventText, currentEventHour, currentDayText.text());
         }
     });
 });
