@@ -51,7 +51,7 @@ Specifically I learned:
 
 ## Usage
 
-If you would like to use this application please follow [this link]()
+If you would like to use this application please follow [this link](https://theinfamousgrim.github.io/personal-work-day-scheduler/)
 
 ## Technology
 
