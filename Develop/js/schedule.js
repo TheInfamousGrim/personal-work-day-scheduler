@@ -1,4 +1,7 @@
 /* ----------------------------- page selectors ----------------------------- */
+// Header selector
+const mainHeader = $('.main-header');
+// currentDay p selector
 const currentDayText = $('#currentDay');
 // TextAreaSelectors
 const textAreas = document.querySelectorAll(`[name="event"]`);
@@ -47,18 +50,12 @@ function updateEventText() {
         currentDayEvents = allEvents.filter((el) => el.event_date === currentDayText.text());
     } else return;
 
-    if (currentDayEvents.length === 0) {
-        textAreas.forEach((txtArea) => {
-            txtArea.text('');
-        });
-    } else {
-        currentDayEvents.forEach((eventObj) => {
-            // Select text area that matches saved event hour with the correct time block
-            const textAreaToBeAdded = $(`[data-hour="${eventObj.event_hour}"]`);
-            // Add the saved event description to the correct text area
-            textAreaToBeAdded.text(eventObj.event_description);
-        });
-    }
+    currentDayEvents.forEach((eventObj) => {
+        // Select text area that matches saved event hour with the correct time block
+        const textAreaToBeAdded = $(`[data-hour="${eventObj.event_hour}"]`);
+        // Add the saved event description to the correct text area
+        textAreaToBeAdded.text(eventObj.event_description);
+    });
 }
 
 updateEventText();
@@ -94,5 +91,11 @@ saveBtns.forEach((btn) => {
         if (currentEventText !== '') {
             addScheduledEvent(allSavedEvents, currentEventText, currentEventHour, currentDayText.text());
         }
+        mainHeader.append('<p class="remove-me">🗓️ Event Saved! 🙌<p>');
+        function removeThePopUp() {
+            const popUp = $('.remove-me');
+            popUp.remove();
+        }
+        const funTimeout = setTimeout(removeThePopUp, 5000);
     });
 });
